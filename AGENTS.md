@@ -37,6 +37,10 @@ When a bug is discovered, prefer writing a regression test before fixing it.
 
 Always perform appropriate verification before declaring the task complete.
 
+Verification uses typecheck/lint/build by default. Do NOT automatically run e2e tests
+with a headless browser; they are not required for every task. If a headless browser
+e2e test is truly needed, ask the user first, then run it.
+
 ## Code Style
 
 - Never use `any` type. Use proper types, generics, or `declare global` augmentation as needed.

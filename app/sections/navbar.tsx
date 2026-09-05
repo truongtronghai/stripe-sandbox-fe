@@ -21,26 +21,32 @@ export function Navbar() {
   };
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
+    const updateActiveSection = () => {
+      const anchor = window.innerHeight / 2;
+      let current = sections[0].id;
+
+      for (const { id } of sections) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= anchor) {
+          current = id;
         }
-      },
-      { threshold: 0.5 },
-    );
+      }
 
-    for (const { id } of sections) {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    }
+      setActiveSection(current);
+    };
 
-    return () => observer.disconnect();
+    updateActiveSection();
+    window.addEventListener('scroll', updateActiveSection, { passive: true });
+    window.addEventListener('resize', updateActiveSection);
+
+    return () => {
+      window.removeEventListener('scroll', updateActiveSection);
+      window.removeEventListener('resize', updateActiveSection);
+    };
   }, []);
 
   const scrollTo = (id: string) => {
+    setActiveSection(id);
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -54,7 +60,7 @@ export function Navbar() {
             {sections.map(({ id, label }) => (
               <Button
                 key={id}
-                variant={activeSection === id ? 'secondary' : 'ghost'}
+                variant={activeSection === id ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => scrollTo(id)}
               >
@@ -76,7 +82,7 @@ export function Navbar() {
           {sections.map(({ id, label, icon: Icon }) => (
             <Button
               key={id}
-              variant={activeSection === id ? 'secondary' : 'ghost'}
+              variant={activeSection === id ? 'default' : 'ghost'}
               className="flex h-auto flex-col gap-1 rounded-lg px-3 py-2"
               onClick={() => scrollTo(id)}
             >

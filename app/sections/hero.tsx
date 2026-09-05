@@ -67,13 +67,13 @@ export function Hero({ config = {} }: HeroProps) {
             isCentered ? 'items-center text-center' : 'items-start lg:flex-row lg:items-center',
           )}
         >
+          <DotPattern className="text-primary/15" />
           <div
             className={cn(
               'relative flex flex-1 flex-col',
-              isCentered ? 'items-center' : hasOverlap && 'lg:-mr-[7.5rem]',
+              isCentered ? 'items-center' : hasOverlap && 'lg:-mr-30',
             )}
           >
-            <DotPattern className="text-primary/15" />
             <div className="relative z-10">
               <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">{heading}</h1>
               <p className="text-muted-foreground mt-6 max-w-2xl text-lg">{subtitle}</p>
@@ -93,7 +93,7 @@ export function Hero({ config = {} }: HeroProps) {
                 isCentered ? 'mt-4 w-full' : 'lg:shrink-0',
               )}
             >
-              <div className={cn('size-56 sm:size-64', isCentered ? 'lg:size-96' : 'lg:size-120')}>
+              <div className={cn('size-56 sm:size-64', isCentered ? 'lg:size-96' : 'lg:size-140')}>
                 <Globe3D
                   className="h-full w-full"
                   markers={sampleMarkers}
