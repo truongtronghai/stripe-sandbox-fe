@@ -44,7 +44,7 @@ const features: FeatureType[] = [
 
 export function Features() {
   return (
-    <div className="my-10">
+    <div id="features" className="my-10">
       <FeatureSection features={features} />
     </div>
   );

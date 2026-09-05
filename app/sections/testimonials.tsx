@@ -1,5 +1,9 @@
 import { testimonials } from '@/data/testimonials';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Marquee } from '@/components/ui/marquee';
+import ReviewCard from '@/components/review-card';
+
+const firstRow = testimonials.slice(0, testimonials.length / 2);
+const secondRow = testimonials.slice(testimonials.length / 2);
 
 export function Testimonials() {
   return (
@@ -9,27 +13,25 @@ export function Testimonials() {
         <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-center">
           See what our customers have to say.
         </p>
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {testimonials.map((testimonial) => (
-            <Card key={testimonial.name}>
-              <CardHeader>
-                <CardContent className="px-0">
-                  <p className="text-muted-foreground">&ldquo;{testimonial.quote}&rdquo;</p>
-                </CardContent>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center gap-3">
-                  <div className="bg-primary text-primary-foreground flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium">
-                    {testimonial.avatar}
-                  </div>
-                  <div>
-                    <CardTitle className="text-sm">{testimonial.name}</CardTitle>
-                    <CardDescription>{testimonial.company}</CardDescription>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+        <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
+          <Marquee pauseOnHover className="[--duration:20s]">
+            {firstRow.map((review, idx) => (
+              <ReviewCard
+                key={`row-1-${review.name}-${new Date().getTime().toString()}-${idx}`}
+                {...review}
+              />
+            ))}
+          </Marquee>
+          <Marquee reverse pauseOnHover className="[--duration:20s]">
+            {secondRow.map((review, idx) => (
+              <ReviewCard
+                key={`row-2-${review.name}-${new Date().getTime().toString()}-${idx}`}
+                {...review}
+              />
+            ))}
+          </Marquee>
+          <div className="from-background pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-linear-to-r"></div>
+          <div className="from-background pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-linear-to-l"></div>
         </div>
       </div>
     </section>
