@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState, useEffect } from 'react';
-import { startMocking } from '@/mocks';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { startMocking } from "@/mocks";
+import { WebSocketProvider } from "@/components/websocket-provider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -22,5 +23,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   if (!ready) return null;
 
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <WebSocketProvider>{children}</WebSocketProvider>
+    </QueryClientProvider>
+  );
 }

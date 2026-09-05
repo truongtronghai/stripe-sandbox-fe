@@ -1,4 +1,5 @@
-import { http, HttpResponse, delay } from 'msw';
+import { ws } from "msw";
+import type { SelectPlanRequest } from "@/types/plan-message";
 
 let simulateError = false;
 
@@ -6,22 +7,60 @@ export function toggleErrorMode() {
   simulateError = !simulateError;
 }
 
+const plansSocket = ws.link("wss://plans.local/ws");
+
 export const handlers = [
-  http.post('/api/plans/select', async ({ request }) => {
-    const body = (await request.json()) as { planId: string };
-    await delay(500);
+  plansSocket.addEventListener("connection", ({ client }) => {
+    client.addEventListener("message", (event) => {
+      const data = event.data;
 
-    if (simulateError) {
-      return HttpResponse.json(
-        { success: false, error: 'Plan selection temporarily unavailable' },
-        { status: 503 },
+      if (typeof data !== "string") return;
+
+      let frame: unknown;
+      try {
+        frame = JSON.parse(data);
+      } catch {
+        return;
+      }
+
+      const isSelectPlanRequest = (value: unknown): value is SelectPlanRequest =>
+        typeof value === "object" &&
+        value !== null &&
+        (value as Record<string, unknown>).type === "selectPlan" &&
+        typeof (value as Record<string, unknown>).planId === "string";
+
+      if (!isSelectPlanRequest(frame)) return;
+
+      const { planId } = frame;
+
+      client.send(
+        JSON.stringify({
+          type: "inProgress",
+          message: "Processing your selection...",
+          planId,
+        }),
       );
-    }
 
-    return HttpResponse.json({
-      success: true,
-      planId: body.planId,
-      message: `Successfully selected plan: ${body.planId}`,
+      setTimeout(() => {
+        if (simulateError) {
+          client.send(
+            JSON.stringify({
+              type: "error",
+              message: "Plan selection temporarily unavailable",
+              planId,
+            }),
+          );
+          return;
+        }
+
+        client.send(
+          JSON.stringify({
+            type: "success",
+            message: `Successfully selected plan: ${planId.toUpperCase()}`,
+            planId,
+          }),
+        );
+      }, 500);
     });
   }),
 ];
