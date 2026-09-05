@@ -36,3 +36,10 @@ Use test-driven-development for:
 When a bug is discovered, prefer writing a regression test before fixing it.
 
 Always perform appropriate verification before declaring the task complete.
+
+## Code Style
+
+- Never use `any` type. Use proper types, generics, or `declare global` augmentation as needed.
+- Do not use abbreviation for function or class names. Using meaningful names instead.
+- Functions are used at multi places MUST be organized as helpers and consumed via importing.
+- Separate to components if available. Do not put all components into a big TSX file.
