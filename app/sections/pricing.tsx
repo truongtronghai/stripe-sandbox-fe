@@ -6,22 +6,23 @@ import { useWebSocket } from "@/components/websocket-provider";
 import InfoPanel from "@/components/info-panel";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { ShineBorder } from "@/components/ui/shine-border";
+import Link from "next/link";
+import { cn } from "cn";
 
 export function Pricing() {
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
-  const { status, lastMessage, isProcessing, send } = useWebSocket();
+  const { status, lastMessage, isProcessing } = useWebSocket();
 
   const handleSelect = (planId: string) => {
     setSelectedTier(planId);
-    send(planId);
   };
 
   const maxFeatureCount = Math.max(...pricingTiers.map((tier) => tier.features.length));
 
-  const subdued = isProcessing || status !== "connected";
+  const disabled = isProcessing || status !== "connected";
 
   const panel = lastMessage
     ? { type: lastMessage.type, message: lastMessage.message }
@@ -86,15 +87,20 @@ export function Pricing() {
                   ))}
                 </ul>
               </CardContent>
-              <CardFooter>
-                <Button
-                  className="w-full"
-                  variant={tier.isRecommended ? "default" : "outline"}
-                  disabled={subdued}
-                  onClick={() => handleSelect(tier.id)}
+              <CardFooter className="flex justify-center">
+                <Link
+                  href={tier.paymentLink || "#"}
+                  target="_blank"
+                  aria-disabled={disabled} // Announces disabled state to screen readers
+                  onNavigate={() => handleSelect(tier.id)}
+                  className={cn(
+                    buttonVariants({ variant: tier.isRecommended ? "default" : "outline" }),
+                    "w-full",
+                    disabled && "pointer-events-none cursor-not-allowed opacity-50", // Disables pointer events visually
+                  )}
                 >
                   {isProcessing && selectedTier === tier.id ? "Selecting..." : "Select Plan"}
-                </Button>
+                </Link>
               </CardFooter>
             </Card>
           ))}
