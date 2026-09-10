@@ -1,12 +1,16 @@
+import z from "zod";
 export interface SelectPlanRequest {
   type: "selectPlan";
   planId: string;
 }
 
-export type PlanSelectionResponse =
-  | { type: "success"; message: string; planId?: string }
-  | { type: "inProgress"; message: string; planId?: string }
-  | { type: "error"; message: string; planId?: string };
+export const PlanSelectionResponseSchema = z.object({
+  type: z.enum(["success", "inProgress", "error"]),
+  message: z.string(),
+  planId: z.string().optional(),
+});
+
+export type PlanSelectionResponse = z.infer<typeof PlanSelectionResponseSchema>;
 
 export function parsePlanSelectionMessage(frame: unknown): PlanSelectionResponse | null {
   if (typeof frame !== "string") return null;
@@ -29,5 +33,5 @@ export function parsePlanSelectionMessage(frame: unknown): PlanSelectionResponse
 
   const planId = typeof candidate.planId === "string" ? candidate.planId : undefined;
 
-  return { type, message, planId };
+  return { type, message, planId: planId || "No planId" };
 }

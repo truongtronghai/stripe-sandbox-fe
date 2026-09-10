@@ -18,7 +18,7 @@ export interface WebSocketContextValue {
   reconnect: () => void;
 }
 
-const WEBSOCKET_URL = "wss://plans.local/ws";
+const WEBSOCKET_URL = process.env.NEXT_PUBLIC_WS_URL || "";
 const OPEN_READY_STATE = 1;
 const RECONNECT_DELAYS_MS = [1000, 2000, 4000, 5000];
 

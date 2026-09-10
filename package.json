@@ -34,7 +34,6 @@
     "cn": "^0.2.5",
     "lucide-react": "^1.41.0",
     "motion": "^13.2.0",
-    "msw": "^2.15.0",
     "next": "16.3.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
@@ -65,10 +64,5 @@
     "typescript": "^5",
     "vite": "^6.4.3",
     "vitest": "^5.0.0"
-  },
-  "msw": {
-    "workerDirectory": [
-      "public"
-    ]
   }
 }
