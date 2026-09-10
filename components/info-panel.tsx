@@ -29,7 +29,7 @@ const InfoPanel: FC<InfoPanelProps> = (props) => {
           <IndicatorIcon type={props.type} />
         </ItemMedia>
         <ItemContent>
-          <ItemTitle className="line-clamp-1">{props.message || "Processing payment..."}</ItemTitle>
+          <ItemTitle>{props.message || "Processing payment..."}</ItemTitle>
         </ItemContent>
       </Item>
     </div>

@@ -2,6 +2,8 @@ import z from "zod";
 export interface SelectPlanRequest {
   type: "selectPlan";
   planId: string;
+  email: string;
+  token: string;
 }
 
 export const PlanSelectionResponseSchema = z.object({

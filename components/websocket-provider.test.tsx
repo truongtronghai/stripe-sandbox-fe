@@ -1,6 +1,7 @@
 import { describe, expect, it, afterEach, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { WebSocketProvider, useWebSocket } from "./websocket-provider";
+import { WebSocketProvider } from "./websocket-provider";
+import { useWebSocket } from "@/hooks/use-websocket";
 import { installMockWebSocket, MockWebSocket } from "@/mocks/mock-websocket";
 
 function Probe() {

@@ -45,5 +45,7 @@ e2e test is truly needed, ask the user first, then run it.
 
 - Never use `any` type. Use proper types, generics, or `declare global` augmentation as needed.
 - Do not use abbreviation for function or class names. Using meaningful names instead.
+- Custom hooks: All custom hooks MUST live in `src/hooks`, not inside component files. Components should consume
+  them via imports instead of defining hooks inline.
 - Functions are used at multi places MUST be organized as helpers and consumed via importing.
 - Separate to components if available. Do not put all components into a big TSX file.

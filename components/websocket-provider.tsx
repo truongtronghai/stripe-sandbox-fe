@@ -1,28 +1,21 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import {
   parsePlanSelectionMessage,
   type PlanSelectionResponse,
   type SelectPlanRequest,
 } from "@/types/plan-message";
-
-export type WebSocketStatus = "connecting" | "connected" | "disconnected" | "reconnecting";
-
-export interface WebSocketContextValue {
-  status: WebSocketStatus;
-  lastMessage: PlanSelectionResponse | null;
-  isProcessing: boolean;
-  send: (planId: string) => void;
-  reconnect: () => void;
-}
+import {
+  WebSocketContext,
+  type WebSocketContextValue,
+  type WebSocketStatus,
+} from "@/hooks/use-websocket";
 
 const WEBSOCKET_URL = process.env.NEXT_PUBLIC_WS_URL || "";
 const OPEN_READY_STATE = 1;
 const RECONNECT_DELAYS_MS = [1000, 2000, 4000, 5000];
-
-const WebSocketContext = createContext<WebSocketContextValue | null>(null);
 
 export function WebSocketProvider({ children }: { children: ReactNode }) {
   const [status, setStatusState] = useState<WebSocketStatus>("connecting");
@@ -121,12 +114,17 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
     };
   }, [connect, clearReconnectTimer]);
 
-  const send = (planId: string) => {
+  const send = (data: SelectPlanRequest) => {
     const socket = socketRef.current;
     if (!socket || socket.readyState !== OPEN_READY_STATE) return;
-    pendingPlanIdRef.current = planId;
-    setPendingPlanIdState(planId);
-    const request: SelectPlanRequest = { type: "selectPlan", planId };
+    pendingPlanIdRef.current = data.planId;
+    setPendingPlanIdState(data.planId);
+    const request: SelectPlanRequest = {
+      type: data.type,
+      planId: data.planId,
+      email: data.email,
+      token: data.token,
+    };
     socket.send(JSON.stringify(request));
   };
 
@@ -150,12 +148,4 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
   };
 
   return <WebSocketContext.Provider value={value}>{children}</WebSocketContext.Provider>;
-}
-
-export function useWebSocket() {
-  const context = useContext(WebSocketContext);
-  if (context === null) {
-    throw new Error("useWebSocket must be used within a <WebSocketProvider>");
-  }
-  return context;
 }
