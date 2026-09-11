@@ -17,7 +17,13 @@ export function Pricing() {
 
   const handleSelect = (planId: string) => {
     setSelectedTier(planId);
-    send({ type: "selectPlan", planId, email: "truongtronghai@gmail.com", token: "sampleToken" });
+    send({
+      type: "selectPlan",
+      planId,
+      email: "truongtronghai@gmail.com",
+      token: "sampleToken",
+      accountName: "Hai Truong sandbox",
+    });
   };
 
   const maxFeatureCount = Math.max(...pricingTiers.map((tier) => tier.features.length));

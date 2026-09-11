@@ -124,6 +124,7 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
       planId: data.planId,
       email: data.email,
       token: data.token,
+      accountName: data.accountName,
     };
     socket.send(JSON.stringify(request));
   };

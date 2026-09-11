@@ -3,6 +3,15 @@ import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { WebSocketProvider } from "./websocket-provider";
 import { useWebSocket } from "@/hooks/use-websocket";
 import { installMockWebSocket, MockWebSocket } from "@/mocks/mock-websocket";
+import type { SelectPlanRequest } from "@/types/plan-message";
+
+const fullSelectionRequest: SelectPlanRequest = {
+  type: "selectPlan",
+  planId: "starter",
+  email: "truongtronghai@gmail.com",
+  token: "sampleToken",
+  accountName: "Hai Truong sandbox",
+};
 
 function Probe() {
   const { status, lastMessage, isProcessing, send, reconnect } = useWebSocket();
@@ -12,7 +21,7 @@ function Probe() {
       <span data-testid="last-message">{lastMessage ? lastMessage.message : ""}</span>
       <span data-testid="last-type">{lastMessage ? lastMessage.type : ""}</span>
       <span data-testid="is-processing">{String(isProcessing)}</span>
-      <button onClick={() => send("starter")}>send</button>
+      <button onClick={() => send(fullSelectionRequest)}>send</button>
       <button onClick={() => reconnect()}>reconnect</button>
     </div>
   );
@@ -85,9 +94,7 @@ describe("WebSocketProvider", () => {
     expect(probe.status()).toBe("connected");
 
     fireEvent.click(screen.getByText("send"));
-    expect(socket.sentMessages).toEqual([
-      JSON.stringify({ type: "selectPlan", planId: "starter" }),
-    ]);
+    expect(socket.sentMessages).toEqual([JSON.stringify(fullSelectionRequest)]);
 
     act(() => {
       socket.receive(JSON.stringify({ type: "inProgress", message: "Working..." }));
@@ -184,9 +191,7 @@ describe("WebSocketProvider", () => {
     expect(MockWebSocket.instances.length).toBe(attemptsAfterReconnect);
 
     fireEvent.click(screen.getByText("send"));
-    expect(probe.latestSocket().sentMessages).toEqual([
-      JSON.stringify({ type: "selectPlan", planId: "starter" }),
-    ]);
+    expect(probe.latestSocket().sentMessages).toEqual([JSON.stringify(fullSelectionRequest)]);
 
     probe.restoreWebSocket();
   });

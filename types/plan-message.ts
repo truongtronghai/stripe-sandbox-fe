@@ -4,6 +4,7 @@ export interface SelectPlanRequest {
   planId: string;
   email: string;
   token: string;
+  accountName: string;
 }
 
 export const PlanSelectionResponseSchema = z.object({
